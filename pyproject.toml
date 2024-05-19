@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "til24-nlp"
+version = "0.1.0"
+description = "template for python api server"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "<3.12,>=3.10"
+fastapi-slim = "^0.111.0"
+python-dotenv = "^1.0.1"
+uvicorn = "^0.29.0"
+uvloop = "^0.19.0"
+word2number = "^1.1"
+httptools = "^0.6.1"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+poethepoet = "*"
+rouge-score = "^0.1.2"
+pandas = "^2.2.2"
+requests = "^2.31.0"
+ipykernel = "^6.29.4"
+rich = "^13.7.1"
+
+[tool.poe.tasks]
+# use_exec for some tasks to avoid hangs on SIGINT.
+dev = { cmd = "python dev.py", use_exec = true }
+prod = { cmd = "docker run --rm --gpus all -p 5002:5002 nyanplan3-nlp:latest", use_exec = true }
+test = "python eval/test_nlp.py"
+publish = "docker push asia-southeast1-docker.pkg.dev/dsta-angelhack/repository-nyanplan3/nyanplan3-nlp:latest"
+requirements = "poetry export -o requirements.txt --without-hashes"
+
+[tool.poe.tasks.build]
+cmd = """docker build -f Dockerfile . \
+  -t nyanplan3-nlp:latest \
+  -t asia-southeast1-docker.pkg.dev/dsta-angelhack/repository-nyanplan3/nyanplan3-nlp:latest \
+  -t nyanplan3-nlp:${tag} \
+  -t asia-southeast1-docker.pkg.dev/dsta-angelhack/repository-nyanplan3/nyanplan3-nlp:${tag} \
+"""
+deps = ["requirements"]
+args = [{ name = "tag", positional = true, required = true }]
+
+[tool.ruff.lint]
+select = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,6 @@
+**/__pycache__
+**/.git*
+.venv
+.devcontainer
+.vscode
+results
