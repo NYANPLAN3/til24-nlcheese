@@ -5,9 +5,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PIP_ROOT_USER_ACTION=ignore
 
-RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-  pip install -U pip
-
 WORKDIR /app
 
 # Remember to regenerate requirements.txt!
